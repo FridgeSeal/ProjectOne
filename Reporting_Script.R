@@ -1,4 +1,4 @@
-BaseData = read.csv(file = 'Detail Report Bayer.csv', header = TRUE, sep = ,) # Base Data contains everything about campaign except hour and custom report information
+BaseData = read.csv(file = 'Base.csv', header = TRUE, sep = ,) # Base Data contains everything about campaign except hour and custom report information
 require(ggplot2)
 require(dplyr)
 require(lubridate) #Because dplyr doesn't support dates unless they're POSIXCT format
@@ -30,7 +30,7 @@ ClickCumSumPlot = BasePlot + geom_path(aes(y = cumsum(PlotData$Clicks))) + geom_
 CTRDatePlot = BasePlot + geom_path(aes(y = CTR), colour = "#009BDC", size = 0.4) + labs(title = "CTR per day", x = "Date", y = "CTR") + scale_y_continuous(breaks = seq(0,max(PlotData$CTR), length.out = 10), labels = scales::percent) + theme(plot.margin = unit(c(0,0,0,0),"cm")) + theme_few() + scale_colour_few() + theme(plot.title = element_text(size = 16, family = "Ubuntu"),text = element_text(family = "Ubuntu Light")) + theme(panel.border = element_blank())
 CTRCumlPlot = BasePlot + geom_path(aes(y = CumlCTR)) + geom_area(aes(y=CumlCTR), fill = "#009BDC", alpha = 0.5) + scale_y_continuous(breaks = seq(0, max(PlotData$CumlCTR), length.out = 10), labels = scales::percent) + labs(title = "Cumulative CTR", x = "Date", y = "CTR") + theme(plot.margin = unit(c(0,0,0,0),"cm")) + theme_few() + scale_colour_few() + theme(plot.title = element_text(size = 16, family = "Ubuntu"),text = element_text(family = "Ubuntu Light")) + theme(panel.border = element_blank())
 
-StrTemp = readLines("Hour Report Bayer.csv") # If you get an error here, put a newline character at the end of the file
+StrTemp = readLines("Hour.csv") # If you get an error here, put a newline character at the end of the file
 HourData = read.csv(text = StrTemp, skip = 4, nrow = length(StrTemp) -6, header= TRUE, sep = ",")
 HourData = subset(HourData, select = c(Hour, Impressions, Clicks))
 HourData$Hour = as.numeric(HourData$Hour)
@@ -51,7 +51,7 @@ colnames(CreativeData) = c("Date", "Banner", "Impressions", "Clicks")
 BaseCreativePlot =  ggplot(CreativeData, aes(CreativeData$Date, CreativeData$Impressions, CreativeData$Clicks))
 CreativeImpressionPlot = BaseCreativePlot + geom_area(aes(y = CreativeData$Impressions, colour = CreativeData$Banner, fill = CreativeData$Banner), position = 'fill')
 CreativeClickPlot = BaseCreativePlot + geom_area(aes(y = CreativeData$Clicks, colour = CreativeData$Banner, fill = CreativeData$Banner), position = 'stack') + theme(plot.margin = unit(c(0,0,0,0),"cm"))
-CustomData = read.csv("Custom Data Bayer.csv", header = TRUE, sep = ",")
+CustomData = read.csv("Custom.csv", header = TRUE, sep = ",")
 CustomData = subset(CustomData, select = c(Device.OS, Geo.Region, Device.Type, Impressions, Clicks))
 colnames(CustomData) = c("OS", "State", "Type", "Impressions", "Clicks")
 CustomData$OS = gsub("[\\d-.]*", "", CustomData$OS, perl = TRUE) # Remove version numbers
