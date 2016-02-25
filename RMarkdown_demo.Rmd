@@ -11,7 +11,7 @@ This is a demo document for the reporting project using the demo campaign.
 It's basically a scratch pad for themes, layouts and types of graphs while we refine what we want to send to clients (and what clients think they want :P )  
 Please note, graph asethetics are not finalised-things like colours, minor layout details, labels, column values, etc will be added in/finalised later.
 
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, include= FALSE}
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, include= FALSE, CairoPlot}
 BaseData = read.csv(file = 'Base.csv', header = TRUE, sep = ,) # Base Data contains everything about campaign except hour and custom report information
 require(ggplot2)
 require(dplyr)
@@ -247,7 +247,7 @@ CTRHourly
 CTRCirclePlot
 ```
  
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', CairoPlot, dev='CairoPNG'}
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 OSData
 ```
 
