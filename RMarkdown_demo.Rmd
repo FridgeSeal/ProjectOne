@@ -118,9 +118,9 @@ HourData = HourData[order(HourData$Hour),]
 row.names(HourData) = NULL
 HourData$CTR = HourData$Clicks/HourData$Impressions
 
-CTRHourly = ggplot(HourData, aes(x = HourData$Hour)) +
-  geom_path(aes(y = HourData$CTR)) +
-  geom_area(aes(y = HourData$CTR), fill = "#009BDC", alpha = 0.5) +
+CTRHourly = ggplot(HourData, aes(x = Hour)) +
+  geom_path(aes(y = CTR)) +
+  geom_area(aes(y = CTR), fill = "#009BDC", alpha = 0.5) +
   scale_x_continuous(breaks = seq(0,23, by =2)) +
   scale_y_continuous(breaks = seq(0, max(HourData$CTR), length.out = 6), labels = scales::percent) +
   labs(title = "CTR by Hour", x = "Hour (24hr format)", y = "CTR") +
@@ -131,7 +131,7 @@ CTRHourly = ggplot(HourData, aes(x = HourData$Hour)) +
         plot.margin = unit(c(0,0,0,0), "cm"),
         panel.border = element_blank())
 
-CTRCirclePlot = ggplot(HourData, aes(x=HourData$Hour)) +
+CTRCirclePlot = ggplot(HourData, aes(x=Hour)) +
   geom_bar(aes(y = CTR, fill = Hour), width = 1, stat = "identity") +
   scale_x_continuous(breaks = seq(0,23, by =2)) +
   theme_few() +
@@ -151,9 +151,9 @@ CreativeData = aggregate(cbind(BaseData$Impressions, BaseData$Clicks, BaseData$B
 CreativeData$V3 = NULL
 colnames(CreativeData) = c("Date", "Banner", "Impressions", "Clicks")
 
-BaseCreativePlot =  ggplot(CreativeData, aes(CreativeData$Date, CreativeData$Impressions, CreativeData$Clicks))
-CreativeImpressionPlot = BaseCreativePlot + geom_area(aes(y = CreativeData$Impressions, colour = CreativeData$Banner, fill = CreativeData$Banner), position = 'fill')
-CreativeClickPlot = BaseCreativePlot + geom_area(aes(y = CreativeData$Clicks, colour = CreativeData$Banner, fill = CreativeData$Banner), position = 'stack') + theme(plot.margin = unit(c(0,0,0,0),"cm"))
+BaseCreativePlot =  ggplot(CreativeData, aes(Date, Impressions, Clicks))
+CreativeImpressionPlot = BaseCreativePlot + geom_area(aes(y = Impressions, colour = Banner, fill = Banner), position = 'fill')
+CreativeClickPlot = BaseCreativePlot + geom_area(aes(y = Clicks, colour = Banner, fill = Banner), position = 'stack') + theme(plot.margin = unit(c(0,0,0,0),"cm"))
 CustomData = read.csv("Custom.csv", header = TRUE, sep = ",")
 CustomData = subset(CustomData, select = c(Device.OS, Geo.Region, Device.Type, Impressions, Clicks))
 colnames(CustomData) = c("OS", "State", "Type", "Impressions", "Clicks")
@@ -175,8 +175,8 @@ OStemp$ImpMin = c(0, head(OStemp$ImpMax, n = -1))
 OStemp$ClickMin = c(0, head(OStemp$ClickMax, n = -1))
 
 OSData = ggplot(OStemp, aes(fill = OS)) +
- geom_rect(aes(ymax = OStemp$ImpMax, ymin = OStemp$ImpMin, xmax = 0.6, xmin = 0.3), colour = "white") +
- geom_rect(aes(ymax = OStemp$ClickMax, ymin = OStemp$ClickMin, xmax = 0.3, xmin = 0), colour = "white") +
+ geom_rect(aes(ymax = ImpMax, ymin = ImpMin, xmax = 0.6, xmin = 0.3), colour = "white") +
+ geom_rect(aes(ymax = ClickMax, ymin = ClickMin, xmax = 0.3, xmin = 0), colour = "white") +
  labs(x= NULL, y = NULL) +
  geom_text(aes(label = paste(round(ImpFrac*100, 2), "%"), x = 0.45, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") +
  geom_text(aes(label = paste(round(ClickFrac*100,2),"%"), x = 0.15, y = ((ClickMin + ClickMax)/2), inherit.aes = TRUE, show.legend = FALSE)) +
