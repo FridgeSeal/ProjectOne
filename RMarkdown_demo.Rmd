@@ -85,8 +85,7 @@ OStemp$ClickMax = cumsum(OStemp$ClickFrac)
 OStemp$ImpMin = c(0, head(OStemp$ImpMax, n = -1))
 OStemp$ClickMin = c(0, head(OStemp$ClickMax, n = -1))
 
-OSImps = ggplot(OStemp, aes(fill = OS)) + geom_rect(aes(ymax = OStemp$ImpMax, ymin = OStemp$ImpMin, xmax = 0.3, xmin = 0), colour = "white") + geom_rect(aes(ymax = OStemp$ClickMax, ymin = OStemp$ClickMin, xmax = 0.6, xmin = 0.3), colour = "white") + theme(panel.grid=element_blank()) + theme(axis.text=element_blank()) + theme(axis.ticks=element_blank()) + theme(panel.background = element_blank()) + theme(legend.position = "bottom") + theme(legend.title = element_blank()) + labs(x= NULL, y = NULL) + theme(plot.margin = unit(c(0,0,0,0),"cm")) + geom_text(aes(label = paste(round(ImpFrac*100, 2), "%"), x = 0.15, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") + geom_text(aes(label = paste(round(ClickFrac*100,2),"%"), x = 0.45, y = ((ClickMin + ClickMax)/2), inherit.aes = TRUE, show.legend = FALSE)) +coord_flip() + theme(panel.border = element_blank(), axis.ticks = element_blank(), axis.text = element_blank()) + theme(plot.margin = unit(c(0,0,0,0),"cm")) + theme_few() + scale_colour_few()
-# OSClicks = ggplot(OStemp, aes(fill = OS)) + geom_rect(aes(ymax = OStemp$ClickMax, ymin = OStemp$ClickMin, xmax = 2.7, xmin = 2.3)) + xlim(0,2.8) + annotate("text", x = 0, y = 0, label = "Clicks by OS", size = 10, fontface = "bold") + theme(panel.grid=element_blank()) + theme(axis.text=element_blank()) + theme(axis.ticks=element_blank()) + theme(panel.background = element_blank()) + theme(legend.position = "bottom") + theme(legend.title = element_blank()) + coord_polar(theta = "y") + labs(x= "", y = "") + theme(plot.margin = unit(c(0,0,0,0),"cm"))
+OSData = ggplot(OStemp, aes(fill = OS)) + geom_rect(aes(ymax = OStemp$ImpMax, ymin = OStemp$ImpMin, xmax = 0.6, xmin = 0.3), colour = "white") + geom_rect(aes(ymax = OStemp$ClickMax, ymin = OStemp$ClickMin, xmax = 0.3, xmin = 0), colour = "white") + theme(panel.grid=element_blank()) + theme(axis.text=element_blank()) + theme(axis.ticks=element_blank()) + theme(panel.background = element_blank()) + theme(legend.position = "bottom") + theme(legend.title = element_blank()) + labs(x= NULL, y = NULL) + theme(plot.margin = unit(c(0,0,0,0),"cm")) + geom_text(aes(label = paste(round(ImpFrac*100, 2), "%"), x = 0.45, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") + geom_text(aes(label = paste(round(ClickFrac*100,2),"%"), x = 0.15, y = ((ClickMin + ClickMax)/2), inherit.aes = TRUE, show.legend = FALSE)) + coord_flip() + theme(plot.margin = unit(c(0,0,0,0),"cm")) + theme_few() + scale_colour_few() + xlim(-0.1,0.7) + theme(panel.border = element_blank(), axis.ticks = element_blank(), axis.text = element_blank(), legend.position = "bottom") + annotate("text", x = 0.65, y = 0.5, label = "Impressions", size = 8, family = "Ubuntu Light") + annotate("text", x = -0.1, y = 0.5, label = "Clicks", size = 8, family = "Ubuntu Light")
 
 Statetemp = aggregate(cbind(CustomData$Impressions, CustomData$Clicks) ~ CustomData$State, FUN = sum)
 colnames(Statetemp) = c("State", "Impressions", "Clicks")
@@ -104,7 +103,7 @@ Stateplot = ggplot(Statetemp, aes(fill = State)) + geom_rect(aes(ymin = ImpMin, 
 ```
 
 
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, CairoPlot, dev='CairoPNG'}
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 ImpDatePlot
 ImpCumSumPlot
 ```
@@ -113,7 +112,7 @@ ImpCumSumPlot
 ClickDatePlot
 ClickCumSumPlot
 ```
-
+ 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 CTRDatePlot
 CTRCumlPlot
@@ -123,15 +122,11 @@ CTRCumlPlot
 CTRHourly
 CTRCirclePlot
 ```
-
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
-OSImps
-OSClicks
+ 
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', CairoPlot, dev='CairoPNG'}
+OSData
 ```
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 Stateplot
 ```
-
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
