@@ -196,16 +196,21 @@ Statetemp$ImpMin = c(0, head(Statetemp$ImpMax, n = -1))
 Statetemp$ClickMin = c(0, head(Statetemp$ClickMax, n = -1))
 
 Stateplot = ggplot(Statetemp, aes(fill = State)) +
-  geom_rect(aes(ymin = ImpMin, ymax = ImpMax, xmin = 0, xmax = 0.2), colour = "White") +
-  geom_rect(aes(ymin = ClickMin, ymax = ClickMax, xmin = 0.2, xmax = 0.4), colour = "white") +
+  geom_rect(aes(ymin = ImpMin, ymax = ImpMax, xmin = 0.2, xmax = 0.4), colour = "White") +
+  geom_rect(aes(ymin = ClickMin, ymax = ClickMax, xmin = 0, xmax = 0.2), colour = "white") +
   xlim(c(0,0.5)) +
-  annotate("text", x = 0.1, y = 1.1, label = "Proportional \n Impressions by State", size = 5, fontface = "bold") +
-  annotate("text", x = 0.3, y = 1.1, label = "Proportional cicks \n by state", size = 5, fontface = "bold") +
-  labs(x = "", y = "") +
+  annotate("text", x = 0.3, y = 1.08, label = "Impressions", size = 5, family = "Ubuntu Light") +
+  annotate("text", x = 0.1, y = 1.05, label = "Clicks", size = 5, family = "Ubuntu Light") +
+  geom_text(aes(label = paste(round(ImpFrac*100,2), "%"), x = 0.3, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light", position = position_dodge(0.05) ) +
+  geom_text(aes(label = paste(round(ClickFrac*100,2), "%"), x = 0.1, y = ((ClickMax + ClickMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") +
+  labs(x = NULL, y = NULL) +
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         panel.background = element_blank(),
         legend.title = element_blank(),
+        legend.position = "bottom",
         plot.margin = unit(c(0,0,0,0),"cm")) +
-  guides(fill = guide_legend(override.aes = list(colour = NULL)))
+  guides(fill = guide_legend(override.aes = list(colour = NULL))) +
+  coord_flip()
+plot(Stateplot)
