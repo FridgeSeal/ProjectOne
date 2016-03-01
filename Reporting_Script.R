@@ -1,3 +1,7 @@
+# Style notes: for function calls with a lot of parameters passed (like theme() or ggplot()), aes() is on a single line, and subsequent parameters
+# go on successive lines
+# Calls with few parameters passed (like read.csv or labs() etc) that are still readable will be on one line
+
 BaseData = read.csv(file = 'Base.csv', header = TRUE, sep = ,) # Base Data contains everything about campaign except hour and custom report information
 require(ggplot2)
 require(dplyr)
@@ -165,7 +169,7 @@ OSData = ggplot(OStemp, aes(fill = OS)) +
   geom_rect(aes(ymax = ClickMax, ymin = ClickMin, xmax = 0.3, xmin = 0), colour = "white") +
   labs(x= NULL, y = NULL) +
   geom_text(aes(label = paste(round(ImpFrac*100, 2), "%"), x = 0.45, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") +
-  geom_text(aes(label = paste(round(ClickFrac*100,2),"%"), x = 0.15, y = ((ClickMin + ClickMax)/2), inherit.aes = TRUE, show.legend = FALSE)) +
+  geom_text(aes(label = paste(round(ClickFrac*100,2),"%"), x = 0.15, y = ((ClickMin + ClickMax)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") +
   coord_flip() +
   theme_few() +
   scale_colour_few() +
@@ -180,9 +184,24 @@ OSData = ggplot(OStemp, aes(fill = OS)) +
         plot.margin = unit(c(0,0,0,0), "cm"),
         panel.border = element_blank(),
         legend.position = "bottom") +
-  annotate("text", x = 0.45, y = -0.105, label = "Impressions", size = 5, family = "Ubuntu Light") +
-  annotate("text", x = 0.15, y = -0.05, label = "Clicks", size = 5, family = "Ubuntu Light") + 
-  annotate("text", x = 0.7, y = 0.5, label = "Platform Breakdown", size = 6, family = "Ubuntu Light")
+  annotate("text",
+           x = 0.45,
+           y = -0.105,
+           label = "Impressions",
+           size = 5,
+           family = "Ubuntu Light") +
+  annotate("text",
+           x = 0.15,
+           y = -0.05,
+           label = "Clicks",
+           size = 5,
+           family = "Ubuntu Light") + 
+  annotate("text",
+           x = 0.7,
+           y = 0.5,
+           label = "Platform Breakdown",
+           size = 6,
+           family = "Ubuntu Light")
 
 Statetemp = aggregate(cbind(CustomData$Impressions, CustomData$Clicks) ~ CustomData$State, FUN = sum)
 colnames(Statetemp) = c("State", "Impressions", "Clicks")
@@ -201,8 +220,14 @@ Stateplot = ggplot(Statetemp, aes(fill = State)) +
   xlim(c(0,0.6)) +
   annotate("text", x = 0.3, y = 1.05, label = "Impressions", size = 5, family = "Ubuntu Light") +
   annotate("text", x = 0.1, y = 1.03, label = "Clicks", size = 5, family = "Ubuntu Light") +
-  geom_text(aes(label = paste(round(ImpFrac*100,2), "%"), x = 0.3, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), angle = 45, family = "Ubuntu") +
-  geom_text(aes(label = paste(round(ClickFrac*100,2), "%"), x = 0.1, y = ((ClickMax + ClickMin)/2), angle = 45, inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu") +
+  geom_text(aes(label = paste(round(ImpFrac*100,2), "%"), x = 0.3, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE),
+                angle = 45,
+                family = "Ubuntu") +
+  geom_text(aes(label = paste(round(ClickFrac*100,2), "%"), x = 0.1, y = ((ClickMax + ClickMin)/2),
+                angle = 45,
+                inherit.aes = TRUE,
+                show.legend = FALSE),
+                family = "Ubuntu") +
   labs(x = NULL, y = NULL) +
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
