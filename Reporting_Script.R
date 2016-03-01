@@ -198,11 +198,11 @@ Statetemp$ClickMin = c(0, head(Statetemp$ClickMax, n = -1))
 Stateplot = ggplot(Statetemp, aes(fill = State)) +
   geom_rect(aes(ymin = ImpMin, ymax = ImpMax, xmin = 0.2, xmax = 0.4), colour = "White") +
   geom_rect(aes(ymin = ClickMin, ymax = ClickMax, xmin = 0, xmax = 0.2), colour = "white") +
-  xlim(c(0,0.5)) +
-  annotate("text", x = 0.3, y = 1.08, label = "Impressions", size = 5, family = "Ubuntu Light") +
-  annotate("text", x = 0.1, y = 1.05, label = "Clicks", size = 5, family = "Ubuntu Light") +
-  geom_text(aes(label = paste(round(ImpFrac*100,2), "%"), x = 0.3, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light", position = position_dodge(0.05) ) +
-  geom_text(aes(label = paste(round(ClickFrac*100,2), "%"), x = 0.1, y = ((ClickMax + ClickMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") +
+  xlim(c(0,0.6)) +
+  annotate("text", x = 0.3, y = 1.05, label = "Impressions", size = 5, family = "Ubuntu Light") +
+  annotate("text", x = 0.1, y = 1.03, label = "Clicks", size = 5, family = "Ubuntu Light") +
+  geom_text(aes(label = paste(round(ImpFrac*100,2), "%"), x = 0.3, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), angle = 45, family = "Ubuntu") +
+  geom_text(aes(label = paste(round(ClickFrac*100,2), "%"), x = 0.1, y = ((ClickMax + ClickMin)/2), angle = 45, inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu") +
   labs(x = NULL, y = NULL) +
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
@@ -210,7 +210,7 @@ Stateplot = ggplot(Statetemp, aes(fill = State)) +
         panel.background = element_blank(),
         legend.title = element_blank(),
         legend.position = "bottom",
+        legend.key = element_rect(colour = "white"),
         plot.margin = unit(c(0,0,0,0),"cm")) +
-  guides(fill = guide_legend(override.aes = list(colour = NULL))) +
   coord_flip()
 plot(Stateplot)
