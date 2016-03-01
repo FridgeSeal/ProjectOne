@@ -107,6 +107,7 @@ for(i in seq(1, length(HourData$Hour), by =1)){
 HourData = HourData[order(HourData$Hour),]
 row.names(HourData) = NULL
 HourData$CTR = HourData$Clicks/HourData$Impressions
+HourData$CTR = HourData$CTR*100
 
 CTRHourly = ggplot(HourData, aes(x = Hour)) +
   geom_path(aes(y = CTR)) +
@@ -136,6 +137,8 @@ CTRCirclePlot = ggplot(HourData, aes(x=Hour)) +
   guides(fill = FALSE) +
   labs(title = "CTR By Hour", x = NULL, y = NULL) +
   coord_polar(start = -0.1)
+
+CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + geom_tile(aes(fill = CTR)) + scale_fill_gradient(low = "white", high = "#c0392b") + labs(x = NULL) + xlim(c(-1,1)) + coord_flip()plot(CTRHeat)
 
 CreativeData = aggregate(cbind(BaseData$Impressions, BaseData$Clicks, BaseData$Banners) ~ BaseData$Date + BaseData$Banners, FUN = sum)
 CreativeData$V3 = NULL
