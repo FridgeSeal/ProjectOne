@@ -184,12 +184,12 @@ OSData = ggplot(OStemp, aes(fill = OS)) +
         plot.margin = unit(c(0,0,0,0), "cm"),
         panel.border = element_blank(),
         legend.position = "bottom") +
-  annotate("text",
-           x = 0.45,
+  annotate("text", # Specifys the type of annotation
+           x = 0.45, # x,y co ords of anotation
            y = -0.105,
-           label = "Impressions",
-           size = 5,
-           family = "Ubuntu Light") +
+           label = "Impressions", # What the anotation says
+           size = 5, # Font size
+           family = "Ubuntu Light") + # Font family
   annotate("text",
            x = 0.15,
            y = -0.05,
@@ -217,11 +217,13 @@ Statetemp$ClickMin = c(0, head(Statetemp$ClickMax, n = -1))
 Stateplot = ggplot(Statetemp, aes(fill = State)) +
   geom_rect(aes(ymin = ImpMin, ymax = ImpMax, xmin = 0.2, xmax = 0.4), colour = "White") +
   geom_rect(aes(ymin = ClickMin, ymax = ClickMax, xmin = 0, xmax = 0.2), colour = "white") +
-  xlim(c(0,0.6)) +
-  annotate("text", x = 0.3, y = 1.05, label = "Impressions", size = 5, family = "Ubuntu Light") +
-  annotate("text", x = 0.1, y = 1.03, label = "Clicks", size = 5, family = "Ubuntu Light") +
-  geom_text(aes(label = paste(round(ImpFrac*100,2), "%"), x = 0.3, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE),
-                angle = 45,
+  xlim(c(-0.1,0.5)) +
+  ylim(c(-0.2,1)) +
+  annotate("text", x = 0.3, y = -0.07, label = "Impressions", size = 5, family = "Ubuntu Light") +
+  annotate("text", x = 0.1, y = -0.05, label = "Clicks", size = 5, family = "Ubuntu Light") +
+  annotate("text", x = 0.5, y = 0.5, label = "State Breakdown", size = 6, family = "Ubuntu Light") +
+  geom_text(aes(label = paste(round(ImpFrac*100,2), "%"), x = 0.3, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), # puts the label in the middle of the bar
+                angle = 45, # Angle in degrees 
                 family = "Ubuntu") +
   geom_text(aes(label = paste(round(ClickFrac*100,2), "%"), x = 0.1, y = ((ClickMax + ClickMin)/2),
                 angle = 45,
