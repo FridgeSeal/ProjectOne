@@ -45,7 +45,7 @@ ImpDatePlot = BasePlot +
   scale_colour_few() +
   theme(plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,0,0),"cm"),
+        plot.margin = unit(c(0,0,2,0),"cm"),
         panel.border = element_blank())
 
 ImpCumSumPlot = BasePlot +
@@ -57,7 +57,7 @@ ImpCumSumPlot = BasePlot +
   scale_colour_few() +
   theme(plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,0,0),"cm"),
+        plot.margin = unit(c(0,0,2,0),"cm"),
         panel.border = element_blank())
 
 ClickDatePlot = BasePlot +
@@ -68,7 +68,7 @@ ClickDatePlot = BasePlot +
   scale_colour_few() +
   theme(plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,0,0), "cm"),
+        plot.margin = unit(c(0,0,2,0), "cm"),
         panel.border = element_blank())
 
 ClickCumSumPlot = BasePlot +
@@ -80,19 +80,19 @@ ClickCumSumPlot = BasePlot +
   scale_colour_few() +
   theme(plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,0,0), "cm"),
+        plot.margin = unit(c(0,0,2,0), "cm"),
         panel.border = element_blank())
 
 CTRDatePlot = BasePlot +
   geom_path(aes(y = CTR), colour = "#009BDC", size = 0.4) +
   labs(title = "CTR per day", x = "Date", y = "CTR") +
   scale_y_continuous(breaks = seq(0,max(PlotData$CTR), length.out = 10), labels = scales::percent) +
-  theme(plot.margin = unit(c(0,0,0,0),"cm")) +
+  theme(plot.margin = unit(c(0,0,2,0),"cm")) +
   theme_few() +
   scale_colour_few() +
   theme(plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,0,0),"cm"),
+        plot.margin = unit(c(0,0,2,0),"cm"),
         panel.border = element_blank())
 
 CTRCumlPlot = BasePlot +
@@ -104,7 +104,7 @@ CTRCumlPlot = BasePlot +
   scale_colour_few() +
   theme(plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,0,0), "cm"),
+        plot.margin = unit(c(0,0,2,0), "cm"),
         panel.border = element_blank())
 
 StrTemp = readLines("Hour.csv") # If you get an error here, put a newline character at the end of the file
@@ -117,6 +117,7 @@ for(i in seq(1, length(HourData$Hour), by =1)){
 HourData = HourData[order(HourData$Hour),]
 row.names(HourData) = NULL
 HourData$CTR = HourData$Clicks/HourData$Impressions
+HourData$CTR = HourData$CTR*100
 
 CTRHourly = ggplot(HourData, aes(x = Hour)) +
   geom_path(aes(y = CTR)) +
@@ -128,7 +129,7 @@ CTRHourly = ggplot(HourData, aes(x = Hour)) +
   scale_colour_few() +
   theme(plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,0,0), "cm"),
+        plot.margin = unit(c(0,0,2,0), "cm"),
         panel.border = element_blank())
 
 CTRCirclePlot = ggplot(HourData, aes(x=Hour)) +
@@ -138,7 +139,7 @@ CTRCirclePlot = ggplot(HourData, aes(x=Hour)) +
   scale_colour_few() +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
-        plot.margin = unit(c(0,0,0,0),"cm"),
+        plot.margin = unit(c(0,0,2,0),"cm"),
         axis.title = element_blank(),
         plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
@@ -152,8 +153,12 @@ CreativeData$V3 = NULL
 colnames(CreativeData) = c("Date", "Banner", "Impressions", "Clicks")
 
 BaseCreativePlot =  ggplot(CreativeData, aes(Date, Impressions, Clicks))
-CreativeImpressionPlot = BaseCreativePlot + geom_area(aes(y = Impressions, colour = Banner, fill = Banner), position = 'fill')
-CreativeClickPlot = BaseCreativePlot + geom_area(aes(y = Clicks, colour = Banner, fill = Banner), position = 'stack') + theme(plot.margin = unit(c(0,0,0,0),"cm"))
+CreativeImpressionPlot = BaseCreativePlot +
+  geom_area(aes(y = Impressions, colour = Banner, fill = Banner), position = 'fill')
+CreativeClickPlot = BaseCreativePlot +
+  geom_area(aes(y = Clicks, colour = Banner, fill = Banner), position = 'stack') +
+  theme(plot.margin = unit(c(0,0,2,0),"cm"))
+
 CustomData = read.csv("Custom.csv", header = TRUE, sep = ",")
 CustomData = subset(CustomData, select = c(Device.OS, Geo.Region, Device.Type, Impressions, Clicks))
 colnames(CustomData) = c("OS", "State", "Type", "Impressions", "Clicks")
@@ -191,7 +196,7 @@ OSData = ggplot(OStemp, aes(fill = OS)) +
        panel.background = element_blank(),
        legend.position = "bottom",
        legend.title = element_blank(),
-       plot.margin = unit(c(0,0,0,0), "cm"),
+       plot.margin = unit(c(0,0,2,0), "cm"),
        panel.border = element_blank(),
        legend.position = "bottom") +
  annotate("text",
@@ -231,13 +236,13 @@ Stateplot = ggplot(Statetemp, aes(fill = State)) +
   ylim(c(-0.2,1)) +
   annotate("text",
            x = 0.3,
-           y = -0.07,
+           y = -0.14,
            label = "Impressions",
            size = 5,
            family = "Ubuntu Light") +
   annotate("text",
            x = 0.1,
-           y = -0.05,
+           y = -0.09,
            label = "Clicks",
            size = 5,
            family = "Ubuntu Light") +
@@ -263,35 +268,41 @@ Stateplot = ggplot(Statetemp, aes(fill = State)) +
         legend.title = element_blank(),
         legend.position = "bottom",
         legend.key = element_rect(colour = "white"),
-        plot.margin = unit(c(0,0,0,0),"cm")) +
+        plot.margin = unit(c(0,0,2,0),"cm")) +
   coord_flip()
 plot(Stateplot)
 ```
-
+<br/>
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 ImpDatePlot
 ImpCumSumPlot
 ```
 
+  
+  
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 ClickDatePlot
 ClickCumSumPlot
 ```
- 
+***
+
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 CTRDatePlot
 CTRCumlPlot
 ```
+***
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 CTRHourly
 CTRCirclePlot
 ```
- 
+***
+
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 OSData
 ```
+***
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 Stateplot
