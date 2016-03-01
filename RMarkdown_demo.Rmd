@@ -276,6 +276,6 @@ CTRCirclePlot
 OSData
 ```
 
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 Stateplot
 ```
