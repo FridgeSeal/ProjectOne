@@ -167,7 +167,24 @@ CTRCirclePlot = ggplot(HourData, aes(x=Hour)) + # Messy and less than ideal, to 
   labs(title = "CTR By Hour", x = NULL, y = NULL) +
   coord_polar(start = -0.1)
 
-CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + geom_tile(aes(fill = CTR)) + scale_fill_gradient(low = "white", high = "#c0392b") + labs(x = NULL) + xlim(c(-1,1)) + coord_flip()
+CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + 
+  geom_tile(aes(fill = CTR)) +
+  scale_fill_gradient(low = "white", high = FlatUI["Pumpkin"]) +
+  labs(x = NULL) +
+  xlim(c(-0.6,0.6)) +
+  scale_y_continuous(breaks = seq(0,23, by = 2)) +
+  coord_flip() + 
+  theme_few() +
+  scale_colour_few() +
+  labs(title = "CTR by Hour (24 Hour format)") +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),        
+        plot.title = element_text(size = 16, family = "Ubuntu"),
+        text = element_text(family = "Ubuntu Light"),
+        plot.margin = unit(c(0,0,2,0), "cm"),
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
 # Super neat heatmap style plot for CTR
 
 CreativeData = aggregate(cbind(BaseData$Impressions, BaseData$Clicks, BaseData$Banners) ~ BaseData$Date + BaseData$Banners, FUN = sum)
@@ -316,7 +333,6 @@ Stateplot = ggplot(Statetemp, aes(fill = State)) +
   coord_flip()
 plot(Stateplot)
 ```
-<br/>
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 ImpDatePlot
@@ -338,7 +354,7 @@ CTRHourly
 CTRCirclePlot
 ```
 
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 CTRHeat
 ```
 
@@ -346,7 +362,6 @@ CTRHeat
 CreativeImpressionPlot
 CreativeClickPlot
 ```
-
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 OSData
