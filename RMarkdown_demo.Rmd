@@ -16,11 +16,10 @@ BaseData = read.csv(file = 'Base.csv', header = TRUE, sep = ,) # Base Data conta
 require(ggplot2)
 require(dplyr)
 require(lubridate) #Because dplyr doesn't support dates unless they're POSIXCT format
-require(Cairo) #For nicer graphs
-require(Amelia) # Handles missing data
+require(Cairo) #For anti aliasing graphs
 require(grid)
 require(ggthemes)
-FlatUI = c(Turquoise = "#1abc9c",
+FlatUI = c(Turquoise = "#1abc9c", # FlatUI colour palette for nicer, material design appearance
             Greensea = "#16a085",
             Emerald = "#2ecc71",
             Nephritis = "#27ae60",
@@ -43,10 +42,10 @@ FlatUI = c(Turquoise = "#1abc9c",
 
 BaseData = BaseData[1:(dim(BaseData)[1]-1),] # Remove the last line containing the totals.
 BaseData$Impressions = gsub(",","", BaseData$Impressions, fixed = TRUE) # Remove the comma's from the values
-BaseData$Clicks = gsub(",","", BaseData$Clicks, fixed = TRUE) # Likewise for clicks
-BaseData$Impressions = as.numeric(BaseData$Impressions) # Cast values into numbers
+BaseData$Clicks = gsub(",","", BaseData$Clicks, fixed = TRUE)
+BaseData$Impressions = as.numeric(BaseData$Impressions)
 BaseData$Clicks = as.numeric(BaseData$Clicks)
-BaseData$Date = mdy(BaseData$Date) #It's not clear
+BaseData$Date = mdy(BaseData$Date)
 ToDrop = c("CTR", "Fill.Rate", "Conversions", "eCPM", "Revenue", "IAB.Tier.1.Categories")
 BaseData = BaseData[, !(names(BaseData) %in% ToDrop)] # Drop variables useless for external reporting
 PlotData = aggregate(cbind(BaseData$Impressions, BaseData$Clicks) ~ BaseData$Date, BaseData, FUN = sum)
@@ -56,7 +55,7 @@ PlotData$CTR = (PlotData$Clicks/PlotData$Impressions)
 PlotData$CumlCTR = (cumsum(PlotData$Clicks))/(cumsum(PlotData$Impressions))
 BasePlot = ggplot(PlotData, aes(Date, Impressions, Clicks, CTR))
 
-ImpDatePlot = BasePlot +
+ImpDatePlot = BasePlot + # Impressions by date plot
   geom_path(aes(y = Impressions), size = 0.4, colour = "#009BDC") +
   labs(title = "Impressions per day", x = "Date", y = "Impressions") +
   scale_y_continuous(breaks = c(0,10000,20000,30000,40000,50000,60000,70000)) +
@@ -67,7 +66,7 @@ ImpDatePlot = BasePlot +
         plot.margin = unit(c(0,0,2,0),"cm"),
         panel.border = element_blank())
 
-ImpCumSumPlot = BasePlot +
+ImpCumSumPlot = BasePlot + # Cumulative impressions by date
   geom_path(aes(y = cumsum(PlotData$Impressions))) +
   geom_area(aes(y=cumsum(PlotData$Impressions)), fill = "#009BDC", alpha = 0.5) +
   scale_y_continuous(breaks = round(seq(0,max(cumsum(PlotData$Impressions)), length.out = 10))) +
@@ -79,7 +78,7 @@ ImpCumSumPlot = BasePlot +
         plot.margin = unit(c(0,0,2,0),"cm"),
         panel.border = element_blank())
 
-ClickDatePlot = BasePlot +
+ClickDatePlot = BasePlot + # Clicks by date plot
   geom_path(aes(y = Clicks), colour = "#009BDC", size = 0.4) +
   labs(title = "Clicks per day", x= "Date", y = "Clicks") +
   scale_y_continuous(breaks = seq(0, max(PlotData$Clicks), by = 50)) +
@@ -90,7 +89,7 @@ ClickDatePlot = BasePlot +
         plot.margin = unit(c(0,0,2,0), "cm"),
         panel.border = element_blank())
 
-ClickCumSumPlot = BasePlot +
+ClickCumSumPlot = BasePlot + # Cumulative clicks by date
   geom_path(aes(y = cumsum(PlotData$Clicks))) +
   geom_area(aes(y=cumsum(PlotData$Clicks)), fill = "#009BDC", alpha = 0.5) +
   scale_y_continuous(breaks = round(seq(0,max(cumsum(PlotData$Clicks)), length.out = 10))) +
@@ -102,7 +101,7 @@ ClickCumSumPlot = BasePlot +
         plot.margin = unit(c(0,0,2,0), "cm"),
         panel.border = element_blank())
 
-CTRDatePlot = BasePlot +
+CTRDatePlot = BasePlot + # CTR (click through rate) by date
   geom_path(aes(y = CTR), colour = "#009BDC", size = 0.4) +
   labs(title = "CTR per day", x = "Date", y = "CTR") +
   scale_y_continuous(breaks = seq(0,max(PlotData$CTR), length.out = 10), labels = scales::percent) +
@@ -114,7 +113,7 @@ CTRDatePlot = BasePlot +
         plot.margin = unit(c(0,0,2,0),"cm"),
         panel.border = element_blank())
 
-CTRCumlPlot = BasePlot +
+CTRCumlPlot = BasePlot + # Total CTR by date/cumulative CTR
   geom_path(aes(y = CumlCTR)) +
   geom_area(aes(y=CumlCTR), fill = "#009BDC", alpha = 0.5) +
   scale_y_continuous(breaks = seq(0, max(PlotData$CumlCTR), length.out = 10), labels = scales::percent) +
@@ -139,7 +138,7 @@ HourData$CTR = HourData$Clicks/HourData$Impressions
 HourData$CTR = HourData$CTR*100
 HourData$dummy = 0
 
-CTRHourly = ggplot(HourData, aes(x = Hour)) +
+CTRHourly = ggplot(HourData, aes(x = Hour)) + # CTR by hour plot, to be deprecated
   geom_path(aes(y = CTR)) +
   geom_area(aes(y = CTR), fill = "#009BDC", alpha = 0.5) +
   scale_x_continuous(breaks = seq(0,23, by =2)) +
@@ -152,7 +151,7 @@ CTRHourly = ggplot(HourData, aes(x = Hour)) +
         plot.margin = unit(c(0,0,2,0), "cm"),
         panel.border = element_blank())
 
-CTRCirclePlot = ggplot(HourData, aes(x=Hour)) +
+CTRCirclePlot = ggplot(HourData, aes(x=Hour)) + # Messy and less than ideal, to be deprecated in favour of heatmap plot
   geom_bar(aes(y = CTR, fill = Hour), width = 1, stat = "identity") +
   scale_x_continuous(breaks = seq(0,23, by =2)) +
   theme_few() +
@@ -169,22 +168,44 @@ CTRCirclePlot = ggplot(HourData, aes(x=Hour)) +
   coord_polar(start = -0.1)
 
 CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + geom_tile(aes(fill = CTR)) + scale_fill_gradient(low = "white", high = "#c0392b") + labs(x = NULL) + xlim(c(-1,1)) + coord_flip()
-
+# Super neat heatmap style plot for CTR
 
 CreativeData = aggregate(cbind(BaseData$Impressions, BaseData$Clicks, BaseData$Banners) ~ BaseData$Date + BaseData$Banners, FUN = sum)
 CreativeData$V3 = NULL
 colnames(CreativeData) = c("Date", "Banner", "Impressions", "Clicks")
 
-BaseCreativePlot =  ggplot(CreativeData, aes(Date, Impressions, Clicks))
+BaseCreativePlot =  ggplot(CreativeData, aes(Date, Impressions, Clicks)) # Creative impression plot
 CreativeImpressionPlot = BaseCreativePlot +
-  geom_area(aes(y = Impressions, colour = Banner, fill = Banner), position = 'fill')
-CreativeClickPlot = BaseCreativePlot +
-  geom_area(aes(y = Clicks, colour = Banner, fill = Banner), position = 'stack') +
-  theme(plot.margin = unit(c(0,0,2,0),"cm"))
+  geom_area(aes(y = Impressions, colour = Banner, fill = Banner), position = 'stack') + # stacked to give an indication of what percentage of delivery
+  theme_few() + # each creative accounts for
+  scale_colour_few() +
+    labs(title = "Impressions per day by creative", x = "Date", y = "Impressions") +
+  theme(panel.grid = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank(),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        plot.title = element_text(size = 16, family = "Ubuntu"),
+        text = element_text(family = "Ubuntu Light") ,
+        plot.margin = unit(c(0,0,2,0), "cm"))
 
-CustomData = read.csv("Custom.csv", header = TRUE, sep = ",")
-CustomData = subset(CustomData, select = c(Device.OS, Geo.Region, Device.Type, Impressions, Clicks))
-colnames(CustomData) = c("OS", "State", "Type", "Impressions", "Clicks")
+CreativeClickPlot = BaseCreativePlot + # Creative Click plot
+  geom_area(aes(y = Clicks, colour = Banner, fill = Banner), position = 'stack') +
+  theme_few() +
+  scale_colour_few() +
+  labs(title = "Clicks per day by Creative", x = "Date", y = "Clicks") +
+  theme(panel.grid = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank(),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        plot.title = element_text(size = 16, family = "Ubuntu"),
+        text = element_text(family = "Ubuntu Light"),
+        plot.margin = unit(c(0,0,2,0),"cm"))
+
+CustomData = read.csv("Custom.csv", header = TRUE, sep = ",") # Read in custom data csv
+CustomData = subset(CustomData, select = c(Device.OS, Geo.Region, Device.Type, Impressions, Clicks)) # A neater way to select the data we actually want
+colnames(CustomData) = c("OS", "State", "Type", "Impressions", "Clicks") # Rename things to more useable names
 CustomData$OS = gsub("[\\d-.]*", "", CustomData$OS, perl = TRUE) # Remove version numbers
 CustomData$OS = gsub("Android.+", "Android", CustomData$OS) # Clean 'Android....' entries
 CustomData$OS = gsub("iPhone OS", "iOS", CustomData$OS) # Clean 'iPhone/iOS/etc...' entries
@@ -195,7 +216,7 @@ CustomData$OS = gsub("^(?!.*(Android|iOS)).*", "Other", CustomData$OS, ignore.ca
 
 OStemp = aggregate(cbind(CustomData$Impressions, CustomData$Clicks) ~ CustomData$OS, FUN = sum) # Aggregate on OS for graphs
 colnames(OStemp) = c("OS", "Impressions", "Clicks")
-OStemp$ImpFrac = OStemp$Impressions/sum(OStemp$Impressions)
+OStemp$ImpFrac = OStemp$Impressions/sum(OStemp$Impressions) # generate values for percentage of total impressions
 OStemp$ClickFrac = OStemp$Clicks/sum(OStemp$Clicks)
 OStemp$ImpMax = cumsum(OStemp$ImpFrac)
 OStemp$ClickMax = cumsum(OStemp$ClickFrac)
@@ -203,10 +224,10 @@ OStemp$ImpMin = c(0, head(OStemp$ImpMax, n = -1))
 OStemp$ClickMin = c(0, head(OStemp$ClickMax, n = -1))
 
 OSData = ggplot(OStemp, aes(fill = OS)) +
- geom_rect(aes(ymax = ImpMax, ymin = ImpMin, xmax = 0.6, xmin = 0.3), colour = "white") +
+ geom_rect(aes(ymax = ImpMax, ymin = ImpMin, xmax = 0.6, xmin = 0.3), colour = "white") + #position the rectangles
  geom_rect(aes(ymax = ClickMax, ymin = ClickMin, xmax = 0.3, xmin = 0), colour = "white") +
  labs(x= NULL, y = NULL) +
- geom_text(aes(label = paste(round(ImpFrac*100, 2), "%"), x = 0.45, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") +
+ geom_text(aes(label = paste(round(ImpFrac*100, 2), "%"), x = 0.45, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") + #position the % values
  geom_text(aes(label = paste(round(ClickFrac*100,2),"%"), x = 0.15, y = ((ClickMin + ClickMax)/2), inherit.aes = TRUE, show.legend = FALSE), family = "Ubuntu Light") +
  coord_flip() +
  theme_few() +
@@ -222,7 +243,7 @@ OSData = ggplot(OStemp, aes(fill = OS)) +
        plot.margin = unit(c(0,0,2,0), "cm"),
        panel.border = element_blank(),
        legend.position = "bottom") +
- annotate("text",
+ annotate("text", # position the labels
           x = 0.45,
           y = -0.105,
           label = "Impressions",
@@ -319,6 +340,11 @@ CTRCirclePlot
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 CTRHeat
+```
+
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
+CreativeImpressionPlot
+CreativeClickPlot
 ```
 
 
