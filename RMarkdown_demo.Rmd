@@ -20,7 +20,26 @@ require(Cairo) #For nicer graphs
 require(Amelia) # Handles missing data
 require(grid)
 require(ggthemes)
-# Flat
+FlatUI = c(Turquoise = "#1abc9c",
+            Greensea = "#16a085",
+            Emerald = "#2ecc71",
+            Nephritis = "#27ae60",
+            PeterRiver = "#3498db",
+            BelizeHole = "#2980b9",
+            Amethyst = "#9b59b6",
+            Wisteria = "#8e44ad",
+            WetAsphalt = "#34495e",
+            MidnightBlue = "#2c3e50",
+            SunFlower = "#f1c40f",
+            Orange = "#f39c12",
+            Carrot = "#e67e22",
+            Pumpkin = "#d35400",
+            Alizarin = "#e74c3c",
+            Pomegranate = "#c0392b",
+            Clouds = "#ecf0f1",
+            Silver = "#bdc3c7",
+            Concrete = "#95a5a6",
+            Asbestos = "#7f8c8d")
 
 BaseData = BaseData[1:(dim(BaseData)[1]-1),] # Remove the last line containing the totals.
 BaseData$Impressions = gsub(",","", BaseData$Impressions, fixed = TRUE) # Remove the comma's from the values
@@ -118,6 +137,7 @@ HourData = HourData[order(HourData$Hour),]
 row.names(HourData) = NULL
 HourData$CTR = HourData$Clicks/HourData$Impressions
 HourData$CTR = HourData$CTR*100
+HourData$dummy = 0
 
 CTRHourly = ggplot(HourData, aes(x = Hour)) +
   geom_path(aes(y = CTR)) +
@@ -147,6 +167,9 @@ CTRCirclePlot = ggplot(HourData, aes(x=Hour)) +
   guides(fill = FALSE) +
   labs(title = "CTR By Hour", x = NULL, y = NULL) +
   coord_polar(start = -0.1)
+
+CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + geom_tile(aes(fill = CTR)) + scale_fill_gradient(low = "white", high = "#c0392b") + labs(x = NULL) + xlim(c(-1,1)) + coord_flip()
+
 
 CreativeData = aggregate(cbind(BaseData$Impressions, BaseData$Clicks, BaseData$Banners) ~ BaseData$Date + BaseData$Banners, FUN = sum)
 CreativeData$V3 = NULL
@@ -278,31 +301,30 @@ plot(Stateplot)
 ImpDatePlot
 ImpCumSumPlot
 ```
-
-  
-  
+ 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 ClickDatePlot
 ClickCumSumPlot
 ```
-***
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 CTRDatePlot
 CTRCumlPlot
 ```
-***
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 CTRHourly
 CTRCirclePlot
 ```
-***
+
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
+CTRHeat
+```
+
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 OSData
 ```
-***
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 Stateplot
