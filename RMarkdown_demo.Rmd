@@ -56,11 +56,10 @@ PlotData$CumlCTR = (cumsum(PlotData$Clicks))/(cumsum(PlotData$Impressions))
 BasePlot = ggplot(PlotData, aes(Date, Impressions, Clicks, CTR))
 
 ImpDatePlot = BasePlot + # Impressions by date plot
-  geom_path(aes(y = Impressions), size = 0.4, colour = "#009BDC") +
+  geom_path(aes(y = Impressions), size = 0.5, colour = FlatUI["BelizeHole"]) +
   labs(title = "Impressions per day", x = "Date", y = "Impressions") +
   scale_y_continuous(breaks = c(0,10000,20000,30000,40000,50000,60000,70000)) +
   theme_few() +
-  scale_colour_few() +
   theme(plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
         plot.margin = unit(c(0,0,2,0),"cm"),
@@ -137,35 +136,6 @@ row.names(HourData) = NULL
 HourData$CTR = HourData$Clicks/HourData$Impressions
 HourData$CTR = HourData$CTR*100
 HourData$dummy = 0
-
-CTRHourly = ggplot(HourData, aes(x = Hour)) + # CTR by hour plot, to be deprecated
-  geom_path(aes(y = CTR)) +
-  geom_area(aes(y = CTR), fill = "#009BDC", alpha = 0.5) +
-  scale_x_continuous(breaks = seq(0,23, by =2)) +
-  scale_y_continuous(breaks = seq(0, max(HourData$CTR), length.out = 6), labels = scales::percent) +
-  labs(title = "CTR by Hour", x = "Hour (24hr format)", y = "CTR") +
-  theme_few() +
-  scale_colour_few() +
-  theme(plot.title = element_text(size = 16, family = "Ubuntu"),
-        text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,2,0), "cm"),
-        panel.border = element_blank())
-
-CTRCirclePlot = ggplot(HourData, aes(x=Hour)) + # Messy and less than ideal, to be deprecated in favour of heatmap plot
-  geom_bar(aes(y = CTR, fill = Hour), width = 1, stat = "identity") +
-  scale_x_continuous(breaks = seq(0,23, by =2)) +
-  theme_few() +
-  scale_colour_few() +
-  theme(axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        plot.margin = unit(c(0,0,2,0),"cm"),
-        axis.title = element_blank(),
-        plot.title = element_text(size = 16, family = "Ubuntu"),
-        text = element_text(family = "Ubuntu Light"),
-        panel.border = element_blank()) +
-  guides(fill = FALSE) +
-  labs(title = "CTR By Hour", x = NULL, y = NULL) +
-  coord_polar(start = -0.1)
 
 CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + 
   geom_tile(aes(fill = CTR)) +
@@ -347,11 +317,6 @@ ClickCumSumPlot
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 CTRDatePlot
 CTRCumlPlot
-```
-
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
-CTRHourly
-CTRCirclePlot
 ```
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
