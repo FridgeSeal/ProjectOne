@@ -1,7 +1,7 @@
 # Style notes: for function calls with a lot of parameters passed (like theme() or ggplot()), aes() is on a single line, and subsequent parameters
 # go on successive lines
 # Calls with few parameters passed (like read.csv or labs() etc) that are still readable will be on one line
-
+Rprof(filename = "RprofileOutput.out", FALSE, interval = 0.01, line.profiling = TRUE)
 BaseData = read.csv(file = 'Base.csv', header = TRUE, sep = ,) # Base Data contains everything about campaign except hour and custom report information
 require(ggplot2)
 require(dplyr)
@@ -157,7 +157,7 @@ CTRCirclePlot = ggplot(HourData, aes(x=Hour)) +
   labs(title = "CTR By Hour", x = NULL, y = NULL) +
   coord_polar(start = -0.1)
 
-CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + geom_tile(aes(fill = CTR)) + scale_fill_gradient(low = "white", high = "#c0392b") + labs(x = NULL) + xlim(c(-1,1)) + coord_flip()plot(CTRHeat)
+CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + geom_tile(aes(fill = CTR)) + scale_fill_gradient(low = "white", high = "#c0392b") + labs(x = NULL) + xlim(c(-1,1)) + coord_flip()
 
 CreativeData = aggregate(cbind(BaseData$Impressions, BaseData$Clicks, BaseData$Banners) ~ BaseData$Date + BaseData$Banners, FUN = sum)
 CreativeData$V3 = NULL
@@ -262,4 +262,4 @@ Stateplot = ggplot(Statetemp, aes(fill = State)) +
         legend.key = element_rect(colour = "white"),
         plot.margin = unit(c(0,0,0,0),"cm")) +
   coord_flip()
-plot(Stateplot)
+Rprof(NULL)
