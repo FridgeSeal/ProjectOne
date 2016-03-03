@@ -2,13 +2,13 @@
 title: "Reporting Demo"
 author: "Tom Watson"
 date: Today
-output: 
+output:
   html_document:
     theme: united
 ---
 
-This is a demo document for the reporting project using the demo campaign.  
-It's basically a scratch pad for themes, layouts and types of graphs while we refine what we want to send to clients (and what clients think they want :P )  
+This is a demo document for the reporting project using the demo campaign.
+Its basically a scratch pad for themes, layouts and types of graphs while we refine what we want to send to clients (and what clients think they want :P )
 Please note, graph asethetics are not finalised-things like colours, minor layout details, labels, column values, etc will be added in/finalised later.
 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, include= FALSE, CairoPlot}
@@ -124,39 +124,6 @@ CTRCumlPlot = BasePlot + # Total CTR by date/cumulative CTR
         plot.margin = unit(c(0,0,2,0), "cm"),
         panel.border = element_blank())
 
-StrTemp = readLines("Hour.csv") # If you get an error here, put a newline character at the end of the file
-HourData = read.csv(text = StrTemp, skip = 4, nrow = length(StrTemp) -6, header= TRUE, sep = ",")
-HourData = subset(HourData, select = c(Hour, Impressions, Clicks))
-HourData$Hour = as.numeric(HourData$Hour)
-for(i in seq(1, length(HourData$Hour), by =1)){
-  HourData$Hour[i] = (i + 10) %% 24
-}
-HourData = HourData[order(HourData$Hour),]
-row.names(HourData) = NULL
-HourData$CTR = HourData$Clicks/HourData$Impressions
-HourData$CTR = HourData$CTR*100
-HourData$dummy = 0
-
-CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) + 
-  geom_tile(aes(fill = CTR)) +
-  scale_fill_gradient(low = "white", high = FlatUI["Pumpkin"]) +
-  labs(x = NULL) +
-  xlim(c(-0.6,0.6)) +
-  scale_y_continuous(breaks = seq(0,23, by = 2)) +
-  coord_flip() + 
-  theme_few() +
-  scale_colour_few() +
-  labs(title = "CTR by Hour (24 Hour format)") +
-  theme(panel.background = element_blank(),
-        panel.grid = element_blank(),
-        panel.border = element_blank(),        
-        plot.title = element_text(size = 16, family = "Ubuntu"),
-        text = element_text(family = "Ubuntu Light"),
-        plot.margin = unit(c(0,0,2,0), "cm"),
-        axis.ticks.y = element_blank(),
-        axis.text.y = element_blank())
-# Super neat heatmap style plot for CTR
-
 CreativeData = aggregate(cbind(BaseData$Impressions, BaseData$Clicks, BaseData$Banners) ~ BaseData$Date + BaseData$Banners, FUN = sum)
 CreativeData$V3 = NULL
 colnames(CreativeData) = c("Date", "Banner", "Impressions", "Clicks")
@@ -189,6 +156,43 @@ CreativeClickPlot = BaseCreativePlot + # Creative Click plot
         plot.title = element_text(size = 16, family = "Ubuntu"),
         text = element_text(family = "Ubuntu Light"),
         plot.margin = unit(c(0,0,2,0),"cm"))
+
+rm(BaseData)
+rm(CreativeData)
+
+StrTemp = readLines("Hour.csv") # If you get an error here, put a newline character at the end of the file
+HourData = read.csv(text = StrTemp, skip = 4, nrow = length(StrTemp) -6, header= TRUE, sep = ",")
+HourData = subset(HourData, select = c(Hour, Impressions, Clicks))
+HourData$Hour = as.numeric(HourData$Hour)
+for(i in seq(1, length(HourData$Hour), by =1)){
+  HourData$Hour[i] = (i + 10) %% 24
+}
+HourData = HourData[order(HourData$Hour),]
+row.names(HourData) = NULL
+HourData$CTR = HourData$Clicks/HourData$Impressions
+HourData$CTR = HourData$CTR*100
+HourData$dummy = 0
+
+CTRHeat = ggplot(HourData,aes(x = dummy, y = Hour,)) +
+  geom_tile(aes(fill = CTR)) +
+  scale_fill_gradient(low = "white", high = FlatUI["Pumpkin"]) +
+  labs(x = NULL) +
+  xlim(c(-0.6,0.6)) +
+  scale_y_continuous(breaks = seq(0,23, by = 2)) +
+  coord_flip() +
+  theme_few() +
+  scale_colour_few() +
+  labs(title = "CTR by Hour (24 Hour format)") +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.title = element_text(size = 16, family = "Ubuntu"),
+        text = element_text(family = "Ubuntu Light"),
+        plot.margin = unit(c(0,0,2,0), "cm"),
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+# Super neat heatmap style plot for CTR
+
 
 CustomData = read.csv("Custom.csv", header = TRUE, sep = ",") # Read in custom data csv
 CustomData = subset(CustomData, select = c(Device.OS, Geo.Region, Device.Type, Impressions, Clicks)) # A neater way to select the data we actually want
@@ -241,7 +245,7 @@ OSData = ggplot(OStemp, aes(fill = OS)) +
           y = -0.05,
           label = "Clicks",
           size = 5,
-          family = "Ubuntu Light") + 
+          family = "Ubuntu Light") +
  annotate("text",
           x = 0.7,
           y = 0.5,
@@ -284,7 +288,7 @@ Stateplot = ggplot(Statetemp, aes(fill = State)) +
            size = 6,
            family = "Ubuntu Light") +
   geom_text(aes(label = paste(round(ImpFrac*100,2), "%"), x = 0.3, y = ((ImpMax + ImpMin)/2), inherit.aes = TRUE, show.legend = FALSE), # puts the label in the middle of the bar
-                angle = 45, # Angle in degrees 
+                angle = 45, # Angle in degrees
                 family = "Ubuntu") +
   geom_text(aes(label = paste(round(ClickFrac*100,2), "%"), x = 0.1, y = ((ClickMax + ClickMin)/2),
                 angle = 45,
@@ -307,27 +311,26 @@ plot(Stateplot)
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 ImpDatePlot
 ImpCumSumPlot
+# rm(ImpDatePlot)
+# rm(ImpCumSumPlot)
 ```
- 
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 ClickDatePlot
 ClickCumSumPlot
+# rm(ClickDatePlot)
+# rm(ClickCumSumPlot)
 ```
-
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
-CTRDatePlot
-CTRCumlPlot
-```
-
-```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
-CTRHeat
-```
-
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
 CreativeImpressionPlot
 CreativeClickPlot
 ```
-
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.width=4.7, fig.asp=1, dev='CairoPNG'}
+CTRDatePlot
+CTRCumlPlot
+```
+```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
+CTRHeat
+```
 ```{r, echo = FALSE, collapse = TRUE, warning= FALSE, message= FALSE, fig.show='hold', fig.asp=0.5, fig.align='center', dev='CairoPNG'}
 OSData
 ```
